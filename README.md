@@ -8,7 +8,7 @@ The client that is calling the bookinfo is a simple container running `curl` to 
 
 ![diagram](keycloak-das.png)
 
-## Setup
+# Setup
 
 These are the high-level steps needed to set up the sample. More details follow below.
 
@@ -20,16 +20,15 @@ These are the high-level steps needed to set up the sample. More details follow 
 1. Install Opa-Istio integration
 1. Create the bookstore namespace and enable Istio and OPA injection
 1. Install the bookstore application
-1. Sync the JKWS used to verify the JWT from Keycloak to Styra DAS
-1. Configure the authorization rules in Styra DAS to allow any request containing a correct JWT.
+1. Setup authorization rules in Styra DAS with JWKS verification of the JWT
 
-### Detailed steps
+## Detailed steps
 
-1. Get a Kubernetes cluster
+### 1. Get a Kubernetes cluster
 
 Beg, borrow or steal a Kubernetes cluster. Anything will work from minikube to cloud-provider managed ones. I used GKE 1.19.
 
-2. Install Istio
+### 2. Install Istio
 
 The setup is tested using the 1.10.0 version of Istio. I don't recommend using the built-in Istio functionality of GKE as that installs 
 a version of Istio that is too old for the OPA integration to work.
@@ -38,12 +37,12 @@ You can use the following quickstart guide to install Istio: https://istio.io/la
 
 Note: I used the `demo` profile.
 
-3. Install Keycloak
+### 3. Install Keycloak
 
 A very simple deployment configuration for Keycloak can be found in `keycloak-deployment.yaml`. This will run Keycloak in a single instance
 with an embedded database. It doesn't ensure the database is persisted when the Pod is killed.
 
-4. Configure the Realm, Client and User in Keycloak 
+### 4. Configure the Realm, Client and User in Keycloak 
 
 You can either configure the Keycloak setting using the admin console or use the following CLI commands. These should be executed inside the
 running Keycloak container, so start with exec-ing into the container. Replace the Pod's name with the actual one from your cluster.
@@ -107,7 +106,7 @@ curl 'http://keycloak.keycloak:8080/auth/realms/bookstore/protocol/openid-connec
 
 Both commands should return valid JSON structures with the [JWT](https://auth0.com/docs/tokens/json-web-tokens) and [JWKS](https://auth0.com/docs/tokens/json-web-tokens/json-web-key-sets) inside.
 
-5. Create a System for Istio-Envoy in Styra DAS
+### 5. Create a System for Istio-Envoy in Styra DAS
 
 Note: This part of the tutorial uses Styra DAS, which is a commercial product and the free version doesn't support
 the Envoy System. Get in touch with Styra for a trial of Styra DAS.
@@ -120,7 +119,7 @@ Using the DAS UI create a new System of type Envoy called bookstore:
 
 ![envoy-system](envoy-system.png)
 
-6. Install OPA-Istio integration
+### 6. Install OPA-Istio integration
 
 Next navigate to Settings / Install / Istio and execute the commands listed there.
 
@@ -130,7 +129,7 @@ This will install create the `styra-system` namespace and install the Styra loca
 marked with the `opa-istio-injection: enabled` label will get an OPA sidecar injected into all pods next to the
 Istio Envoy sidecar.
 
-7. Create the bookstore namespace and enable Istio and OPA injection
+### 7. Create the bookstore namespace and enable Istio and OPA injection
 
 Create a namespace called `bookstore` with the Istio and OPA injection enabled:
 
@@ -144,7 +143,7 @@ metadata:
     opa-istio-injection: enabled
 ```
 
-8. Install the bookstore application
+### 8. Install the bookstore application
 
 ```bash
 kubectl apply -n bookstore -f https://raw.githubusercontent.com/istio/istio/release-1.10/samples/bookinfo/platform/kube/bookinfo.yaml
@@ -164,7 +163,7 @@ reviews-v2-588f666ddb-ffbkq      3/3     Running   0          24h
 reviews-v3-5f59c566d6-mfqqc      3/3     Running   0          24h
 ```
 
-10. Setup authorization rules in Styra DAS with JWKS verification of the JWT
+### 9. Setup authorization rules in Styra DAS with JWKS verification of the JWT
 
 Edit the Ingress rules in your bookstore System in Styra DAS to look like this. Also delete any other sample rules that were created
 for the system.
