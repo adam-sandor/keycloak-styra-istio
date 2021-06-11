@@ -248,6 +248,8 @@ curl -H "Authorization: Bearer ${TOKEN}" http://productpage:9080
 When you navigate to the Decisions page you should also see the allowed and denied decisions. From here on you can go ahead and play with the rules.
 Don't forget to publish your rules after changing them and wait a few seconds for the changes to sync.
 
+![das-decisions](das-decisions.png)
+
 # Next steps
 
 Here are some ideas for where you can go from here
